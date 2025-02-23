@@ -2,21 +2,15 @@ package br.com.neurotech.challenge.service;
 
 import org.springframework.stereotype.Service;
 
-import br.com.neurotech.challenge.entity.NeurotechClient;
+import br.com.neurotech.challenge.entity.Client;
 
-@Service
+import java.util.List;
+
 public interface ClientService {
-	
-	/**
-	 * Salva um novo cliente
-	 * 
-	 * @return ID do cliente recém-salvo
-	 */
-	String save(NeurotechClient client);
-	
-	/**
-	 * Recupera um cliente baseado no seu ID
-	 */
-	NeurotechClient get(String id);
 
+	Client save(Client client);
+	
+	Client getClientById(Long id);
+
+	List<String> listCustomersAptosCreditoFixoHatch();
 }
