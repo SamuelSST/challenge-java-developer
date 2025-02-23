@@ -1,5 +1,6 @@
 package br.com.neurotech.challenge.controller;
 
+import br.com.neurotech.challenge.controller.dto.response.ClientResponseDTO;
 import br.com.neurotech.challenge.entity.Client;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.ClientService;
@@ -13,12 +14,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
 class CreditControllerTest {
@@ -74,5 +77,31 @@ class CreditControllerTest {
         mockMvc.perform(get("/credit/{id}/{model}", 1L, VehicleModel.HATCH))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("Cliente não apto para crédito automotivo"));
+    }
+
+    @Test
+    public void testListCustomersEligibleForFixedCreditHatch_Success() throws Exception {
+        ClientResponseDTO client1 = new ClientResponseDTO(1L, "Cliente 1", 10500.0);
+        ClientResponseDTO client2 = new ClientResponseDTO(2L, "Cliente 2", 12000.0);
+
+        when(clientService.listCustomersAptosCreditoFixoHatch()).thenReturn(Arrays.asList(client1, client2));
+
+        mockMvc.perform(get("/credit/fixed-credit/hatch"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].name").value("Cliente 1"))
+                .andExpect(jsonPath("$[0].income").value(10500.0))
+                .andExpect(jsonPath("$[1].id").value(2))
+                .andExpect(jsonPath("$[1].name").value("Cliente 2"))
+                .andExpect(jsonPath("$[1].income").value(12000.0));
+    }
+
+
+    @Test
+    public void testListCustomersEligibleForFixedCreditHatch_NoContent() throws Exception {
+        when(clientService.listCustomersAptosCreditoFixoHatch()).thenReturn(Arrays.asList());
+
+        mockMvc.perform(get("/credit/fixed-credit/hatch"))
+                .andExpect(status().isNoContent());
     }
 }

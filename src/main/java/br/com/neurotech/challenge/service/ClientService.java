@@ -1,5 +1,6 @@
 package br.com.neurotech.challenge.service;
 
+import br.com.neurotech.challenge.controller.dto.response.ClientResponseDTO;
 import org.springframework.stereotype.Service;
 
 import br.com.neurotech.challenge.entity.Client;
@@ -12,5 +13,5 @@ public interface ClientService {
 	
 	Client getClientById(Long id);
 
-	List<String> listCustomersAptosCreditoFixoHatch();
+	List<ClientResponseDTO> listCustomersAptosCreditoFixoHatch();
 }

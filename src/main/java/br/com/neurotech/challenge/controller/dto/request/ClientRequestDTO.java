@@ -1,4 +1,4 @@
-package br.com.neurotech.challenge.controller.dto;
+package br.com.neurotech.challenge.controller.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

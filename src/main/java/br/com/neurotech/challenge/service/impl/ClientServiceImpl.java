@@ -1,5 +1,6 @@
 package br.com.neurotech.challenge.service.impl;
 
+import br.com.neurotech.challenge.controller.dto.response.ClientResponseDTO;
 import br.com.neurotech.challenge.entity.Client;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.repository.ClientRepository;
@@ -31,14 +32,15 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<String> listCustomersAptosCreditoFixoHatch() {
+    public List<ClientResponseDTO> listCustomersAptosCreditoFixoHatch() {
         List<Client> clients = clienteRepository.findByAgeBetween(23, 49);
-        List<String> result = new ArrayList<>();
+        List<ClientResponseDTO> result = new ArrayList<>();
         for (Client client : clients) {
             if (creditService.checkCredit(client, VehicleModel.HATCH)) {
-                result.add(client.getName() + " - R$ " + client.getIncome());
+                result.add(new ClientResponseDTO(client.getId(), client.getName(), client.getIncome()));
             }
         }
         return result;
     }
+
 }

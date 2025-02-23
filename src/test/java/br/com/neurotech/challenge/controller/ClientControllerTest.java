@@ -2,7 +2,7 @@ package br.com.neurotech.challenge.controller;
 
 import br.com.neurotech.challenge.entity.Client;
 import br.com.neurotech.challenge.service.ClientService;
-import br.com.neurotech.challenge.controller.dto.ClientRequestDTO;
+import br.com.neurotech.challenge.controller.dto.request.ClientRequestDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,22 +72,5 @@ public class ClientControllerTest {
         mockMvc.perform(get("/client/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Cliente não encontrado com o ID fornecido."));
-    }
-
-    @Test
-    public void testListCustomersEligibleForFixedCreditHatch_Success() throws Exception {
-        when(clientService.listCustomersAptosCreditoFixoHatch()).thenReturn(Arrays.asList("Cliente 1 - R$ 10500.0"));
-
-        mockMvc.perform(get("/client/fixed-credit/hatch"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]").value("Cliente 1 - R$ 10500.0"));
-    }
-
-    @Test
-    public void testListCustomersEligibleForFixedCreditHatch_NoContent() throws Exception {
-        when(clientService.listCustomersAptosCreditoFixoHatch()).thenReturn(Arrays.asList());
-
-        mockMvc.perform(get("/client/fixed-credit/hatch"))
-                .andExpect(status().isNoContent());
     }
 }

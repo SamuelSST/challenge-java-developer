@@ -1,5 +1,6 @@
 package br.com.neurotech.challenge.controller;
 
+import br.com.neurotech.challenge.controller.dto.response.ClientResponseDTO;
 import br.com.neurotech.challenge.entity.Client;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.service.ClientService;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/credit")
@@ -50,5 +53,20 @@ public class CreditController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Cliente não apto para crédito automotivo");
         }
+    }
+
+    @Operation(summary = "Lista clientes aptos para crédito fixo no modelo Hatch",
+            description = "Este endpoint retorna uma lista de clientes que são elegíveis para crédito fixo com base no modelo de veículo Hatch.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de clientes encontrada com sucesso."),
+            @ApiResponse(responseCode = "404", description = "Nenhum cliente encontrado para o critério de crédito.")
+    })
+    @GetMapping("/fixed-credit/hatch")
+    public ResponseEntity<List<ClientResponseDTO>> listCustomersEligibleForFixedCreditHatch() {
+        List<ClientResponseDTO> clients = clientService.listCustomersAptosCreditoFixoHatch();
+        if (clients.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(clients);
     }
 }

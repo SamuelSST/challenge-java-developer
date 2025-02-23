@@ -1,5 +1,6 @@
 package br.com.neurotech.challenge.service;
 
+import br.com.neurotech.challenge.controller.dto.response.ClientResponseDTO;
 import br.com.neurotech.challenge.entity.Client;
 import br.com.neurotech.challenge.entity.VehicleModel;
 import br.com.neurotech.challenge.repository.ClientRepository;
@@ -84,16 +85,21 @@ class ClientServiceImplTest {
         client2.setIncome(2000.0);
 
         List<Client> clients = Arrays.asList(client1, client2);
-
         when(clientRepository.findByAgeBetween(23, 49)).thenReturn(clients);
         when(creditService.checkCredit(client1, VehicleModel.HATCH)).thenReturn(true);
         when(creditService.checkCredit(client2, VehicleModel.HATCH)).thenReturn(false);
 
-        List<String> eligibleClients = clientService.listCustomersAptosCreditoFixoHatch();
+        List<ClientResponseDTO> eligibleClients = clientService.listCustomersAptosCreditoFixoHatch();
 
         assertNotNull(eligibleClients);
+
         assertEquals(1, eligibleClients.size());
-        assertEquals("Client 1 - R$ 10000.0", eligibleClients.get(0));
+
+        ClientResponseDTO firstClient = eligibleClients.get(0);
+        String formattedClient = firstClient.getName() + " - R$ " + firstClient.getIncome();
+
+        assertEquals("Client 1 - R$ 10000.0", formattedClient);
+
         verify(clientRepository, times(1)).findByAgeBetween(23, 49);
         verify(creditService, times(1)).checkCredit(client1, VehicleModel.HATCH);
         verify(creditService, times(1)).checkCredit(client2, VehicleModel.HATCH);
@@ -103,7 +109,7 @@ class ClientServiceImplTest {
     void testListCustomersEligibleForFixedCreditHatchNoClients() {
         when(clientRepository.findByAgeBetween(23, 49)).thenReturn(Arrays.asList());
 
-        List<String> eligibleClients = clientService.listCustomersAptosCreditoFixoHatch();
+        List<ClientResponseDTO> eligibleClients = clientService.listCustomersAptosCreditoFixoHatch();
 
         assertNotNull(eligibleClients);
         assertTrue(eligibleClients.isEmpty());
